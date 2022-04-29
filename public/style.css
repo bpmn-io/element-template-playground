@@ -1,0 +1,33 @@
+.playground {
+  display: flex;
+  height: 800px;
+}
+
+#error-panel {
+  color: red;
+  font-family: monospace;
+}
+
+#bpmn-container .djs-palette,
+#bpmn-container .djs-minimap,
+#bpmn-container .djs-context-pad {
+  display: none;
+}
+
+.playground > * {
+  flex: 1;
+}
+
+#bpmn-container {
+  display: flex;
+}
+
+#properties-container {
+  flex: 1;
+  min-width: 200px;
+}
+
+#diagram-container {
+  flex: 3;
+  border-right:  solid 1px #CCC;
+}
