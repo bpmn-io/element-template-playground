@@ -2,21 +2,19 @@
 	"name": "browser-esm-webpack",
 	"scripts": {
 		"start": "webpack serve",
-		"build": "node ./node_modules/webpack/bin/webpack.js --progress"
+		"build": "webpack --progress --mode production"
 	},
 	"dependencies": {
-		"@bpmn-io/properties-panel": "^0.13.2",
-		"@camunda/zeebe-element-templates-json-schema": "^0.4.1",
-		"bpmn-js-properties-panel": "^1.1.0",
-		"camunda-bpmn-js": "^0.13.1",
-		"monaco-editor": "^0.33.0",
-		"webpack": "^5.72.0"
+		"@camunda/zeebe-element-templates-json-schema": "^0.6.0",
+		"camunda-bpmn-js": "^1.2.0",
+		"monaco-editor": "^0.34.1",
+		"webpack": "^5.75.0"
 	},
 	"devDependencies": {
-		"css-loader": "^6.7.1",
+		"css-loader": "^6.7.3",
 		"file-loader": "^6.2.0",
 		"style-loader": "^3.3.1",
-		"webpack-cli": "^4.9.2",
-		"webpack-dev-server": "^4.8.1"
+		"webpack-cli": "^5.0.1",
+		"webpack-dev-server": "^4.11.1"
 	}
 }
