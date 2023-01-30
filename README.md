@@ -1,24 +1,20 @@
 # element-template-playground
 
-A simple playground to define + preview Camunda 8 element templates.
+A simple playground to define + preview Camunda 8 element templates. [__Try it out__](https://bpmn-io.github.io/element-templates-playground).
+
+[![Image](./resources/screencapture.gif)](https://bpmn-io.github.io/element-templates-playground)
 
 
-![Image](./resources/screencapture.gif)
+## Build
 
-##  Demo
-
-Check out [the live demo](https://bpmn-io.github.io/element-templates-playground).
-
-### Build
-
-```
+```sh
 npm install
+```
+
+```sh
+# build into ./public
 npm run build
-```
 
-### Run locally
-
-```
-npm install
+# run locally
 npm start
 ```
