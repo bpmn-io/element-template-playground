@@ -96,7 +96,13 @@ function updatePreview() {
   try {
     const templateDefinition = JSON.parse(templateText);
 
-    bpmnModeler.invoke((
+    bpmnModeler.invoke([
+      'elementTemplatesLoader',
+      'elementTemplates',
+      'elementFactory',
+      'bpmnFactory',
+      'modeling', 'canvas',
+      'selection', (
       elementTemplatesLoader,
       elementTemplates,
       elementFactory,
@@ -132,7 +138,7 @@ function updatePreview() {
         selection.select(task);
       });
 
-    });
+    }]);
 
   } catch (error) {
     return handleError(error);
