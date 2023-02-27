@@ -2,13 +2,11 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" href="https://unpkg.com/camunda-bpmn-js@0.13.1/dist/assets/camunda-cloud-modeler.css" />
-
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
 
-    <div class="playground">
+    <div id="playground">
       <div id="code-container" style="border: 1px solid #ccc"></div>
       <div id="bpmn-container" style="border: 1px solid #ccc">
       	<div id="diagram-container"></div>
@@ -16,7 +14,13 @@
       </div>
     </div>
 
-    <div id="error-panel"></div>
+    <div id="bottom-panel">
+      <div id="control-buttons">
+        <button type="button" id="download-templates">Download templates</button>
+        <button type="button" id="download-bpmn">Download BPMN</button>
+      </div>
+      <div id="error-panel"></div>
+    </div>
 
     <script src="./app.bundle.js"></script>
   </body>

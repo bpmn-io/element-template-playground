@@ -1,21 +1,25 @@
-.playground {
-  display: flex;
-  height: 800px;
+html,
+body {
+    height: 100%;
+}
+
+body {
+  display: grid;
+  grid-template-rows: 80% auto;
+}
+
+#playground {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#code-container, #bpmn-container {
+  max-width: 100%;
 }
 
 #error-panel {
   color: red;
   font-family: monospace;
-}
-
-#bpmn-container .djs-palette,
-#bpmn-container .djs-minimap,
-#bpmn-container .djs-context-pad {
-  display: none;
-}
-
-.playground > * {
-  flex: 1;
 }
 
 #bpmn-container {

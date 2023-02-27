@@ -1,0 +1,76 @@
+[
+  {
+    "$schema": "https://unpkg.com/browse/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Message Event Template - hidden properties",
+    "id": "messageEventTemplateHiddenProperties",
+    "appliesTo": [
+      "bpmn:IntermediateCatchEvent",
+      "bpmn:IntermediateThrowEvent"
+    ],
+    "elementType": {
+      "value": "bpmn:IntermediateCatchEvent",
+      "eventDefinition": "bpmn:MessageEventDefinition"
+    },
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "hiddenName",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "messageName"
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "=myCorrelationKeyVariable",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "correlationKey"
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/browse/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Message Event Template - configurable properties",
+    "id": "messageEventTemplateConfigurable",
+    "appliesTo": [
+      "bpmn:IntermediateCatchEvent",
+      "bpmn:IntermediateThrowEvent"
+    ],
+    "elementType": {
+      "value": "bpmn:IntermediateCatchEvent",
+      "eventDefinition": "bpmn:MessageEventDefinition"
+    },
+    "properties": [
+      {
+        "label": "Configurable Message Name",
+        "type": "String",
+        "value": "=myExpression",
+        "feel": "required",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "messageName"
+        }
+      },
+      {
+        "label": "Configurable Correlation Key",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "myVariable",
+            "value": "myVariable"
+          },
+          {
+            "name": "myOtherVariable",
+            "value": "myOtherVariable"
+          }
+        ],
+        "binding": {
+          "type": "zeebe:input",
+          "name": "correlationKey"
+        }
+      }
+    ]
+  }
+]

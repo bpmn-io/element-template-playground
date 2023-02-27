@@ -5,9 +5,12 @@
 		"build": "webpack --progress --mode production"
 	},
 	"dependencies": {
-		"@camunda/zeebe-element-templates-json-schema": "^0.6.0",
+		"@camunda/zeebe-element-templates-json-schema": "^0.7.0",
+		"bpmn-js": "^11.5.0",
+		"bpmn-js-properties-panel": "github:bpmn-io/bpmn-js-properties-panel#message-templates",
 		"camunda-bpmn-js": "^1.2.0",
-		"monaco-editor": "^0.34.1",
+		"downloadjs": "^1.4.7",
+		"monaco-editor": "^0.36.0",
 		"webpack": "^5.75.0"
 	},
 	"devDependencies": {
@@ -16,5 +19,9 @@
 		"style-loader": "^3.3.1",
 		"webpack-cli": "^5.0.1",
 		"webpack-dev-server": "^4.11.1"
+	},
+	"overrides": {
+		"bpmn-js": "$bpmn-js",
+		"bpmn-js-properties-panel": "$bpmn-js-properties-panel"
 	}
 }
