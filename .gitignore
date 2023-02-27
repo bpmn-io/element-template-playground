@@ -1,3 +1,4 @@
 node_modules
-public/*.js
-public/*.ttf
+public
+!public/index.html
+!public/styles.css
