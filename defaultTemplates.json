@@ -1,8 +1,8 @@
 [
   {
     "$schema": "https://unpkg.com/browse/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-    "name": "Message Event Template - hidden properties",
-    "id": "messageEventTemplateHiddenProperties",
+    "name": "Message Template",
+    "id": "com.camunda.example.MessageTemplate",
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -13,18 +13,19 @@
     },
     "properties": [
       {
-        "type": "Hidden",
-        "value": "hiddenName",
+        "label": "message name",
+        "type": "String",
         "binding": {
-          "type": "zeebe:input",
-          "name": "messageName"
+          "type": "bpmn:Message#property",
+          "name": "name"
         }
       },
       {
-        "type": "Hidden",
-        "value": "=myCorrelationKeyVariable",
+        "label": "correlation key",
+        "type": "String",
+        "feel": "required",
         "binding": {
-          "type": "zeebe:input",
+          "type": "bpmn:Message#zeebe:subscription#property",
           "name": "correlationKey"
         }
       }
@@ -32,8 +33,8 @@
   },
   {
     "$schema": "https://unpkg.com/browse/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-    "name": "Message Event Template - configurable properties",
-    "id": "messageEventTemplateConfigurable",
+    "name": "Message Template - hidden properties",
+    "id": "com.camunda.example.MessageTemplateHidden",
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -44,30 +45,20 @@
     },
     "properties": [
       {
-        "label": "Configurable Message Name",
-        "type": "String",
-        "value": "=myExpression",
-        "feel": "required",
+        "label": "message name",
+        "type": "Hidden",
+        "value": "hardcoded",
         "binding": {
-          "type": "zeebe:input",
-          "name": "messageName"
+          "type": "bpmn:Message#property",
+          "name": "name"
         }
       },
       {
-        "label": "Configurable Correlation Key",
-        "type": "Dropdown",
-        "choices": [
-          {
-            "name": "myVariable",
-            "value": "myVariable"
-          },
-          {
-            "name": "myOtherVariable",
-            "value": "myOtherVariable"
-          }
-        ],
+        "label": "correlation key",
+        "type": "Hidden",
+        "value": "= correlationKey",
         "binding": {
-          "type": "zeebe:input",
+          "type": "bpmn:Message#zeebe:subscription#property",
           "name": "correlationKey"
         }
       }

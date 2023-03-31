@@ -6,13 +6,15 @@
 		"deploy": "npm run build && netlify deploy -d public"
 	},
 	"dependencies": {
+		"@bpmn-io/element-templates-validator": "file:../element-templates-validator",
 		"@camunda/zeebe-element-templates-json-schema": "^0.7.0",
 		"bpmn-js": "^11.5.0",
 		"bpmn-js-properties-panel": "github:bpmn-io/bpmn-js-properties-panel#message-templates",
 		"camunda-bpmn-js": "^1.2.0",
 		"downloadjs": "^1.4.7",
 		"monaco-editor": "^0.36.0",
-		"webpack": "^5.75.0"
+		"webpack": "^5.75.0",
+		"zeebe-bpmn-moddle": "^0.18.0"
 	},
 	"devDependencies": {
 		"css-loader": "^6.7.3",
@@ -22,6 +24,8 @@
 		"webpack-dev-server": "^4.11.1"
 	},
 	"overrides": {
+		"@bpmn-io/element-templates-validator": "$@bpmn-io/element-templates-validator",
+		"@camunda/zeebe-element-templates-json-schema": "$@camunda/zeebe-element-templates-json-schema",
 		"bpmn-js": "$bpmn-js",
 		"bpmn-js-properties-panel": "$bpmn-js-properties-panel"
 	}
