@@ -32,6 +32,14 @@ const jsonCode = `{
   "properties": []
 }`;
 
+const readOnlyRanges = [
+  {
+    // Start of File
+    startLineNumber: 0,
+    endLineNumber: 4,
+  }
+]
+
 const modelUri = monaco.Uri.parse('a://b/foo.json');
 const model = monaco.editor.createModel(jsonCode, 'json', modelUri);
 
@@ -58,6 +66,21 @@ const jsonEditor = monaco.editor.create(document.querySelector('#code-container'
   folding: true,
   formatOnPaste: true
 });
+
+jsonEditor.createDecorationsCollection(
+  readOnlyRanges.map((range) => ({
+    range: {
+      ...range
+    },
+    options: {
+      isWholeLine: true,
+      className: 'readOnlyLine',
+      marginClassName: 'readOnlyLine'
+    }
+  }))
+);
+
+
 
 const bpmnModeler = new BpmnModeler({
   container: document.querySelector('#diagram-container'),
@@ -148,6 +171,23 @@ function updatePreview() {
   }
 
 }
+
+const readonlyRange = new monaco.Range(0, 0, 5, 0)
+jsonEditor.onKeyDown(e => {
+  console.log(e);
+
+  // allow cursor movement
+  if (e.keyCode >= 13 && e.keyCode <= 18) { 
+    return;
+  }
+
+  const contains = jsonEditor.getSelections().findIndex(range => readonlyRange.intersectRanges(range))
+  
+  if (contains !== -1) {
+      e.stopPropagation()
+      e.preventDefault() // for Ctrl+C, Ctrl+V
+  }
+});
 
 jsonEditor.onDidChangeModelContent(event => {
   updatePreview();

@@ -43,3 +43,7 @@
   flex: 3;
   border-right:  solid 1px #CCC;
 }
+
+.readOnlyLine {
+  background-color: rgba(0, 0, 0, 0.15);
+}
