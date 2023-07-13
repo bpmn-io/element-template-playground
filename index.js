@@ -48,12 +48,15 @@ monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
 
 const jsonEditor = monaco.editor.create(document.querySelector('#code-container'), {
   model: model,
-  lineNumbers: false,
+  lineNumbers: true,
   minimap: {
     enabled: false
   },
   useTabStops: false,
-  tabSize: 2
+  tabSize: 2,
+  automaticLayout: true,
+  folding: true,
+  formatOnPaste: true
 });
 
 const bpmnModeler = new BpmnModeler({
