@@ -1,5 +1,7 @@
 import * as monaco from 'monaco-editor';
 
+import './suggestions'
+
 import BpmnModeler from 'camunda-bpmn-js/lib/camunda-cloud/Modeler';
 
 import jsonSchema from '@camunda/zeebe-element-templates-json-schema/resources/schema.json';
@@ -28,8 +30,8 @@ const schemaUri = 'https://unpkg.com/browse/@camunda/zeebe-element-templates-jso
 
 const jsonCode = `{
   "$schema": "${schemaUri}",
-  "name": "asd",
-  "id": "asd",
+  "name": "Connector Name",
+  "id": "connector-id",
   "appliesTo": ["bpmn:Task"],
   "properties": []
 }`;
@@ -217,13 +219,11 @@ pasteContainer.addEventListener('paste', event => {
     return;
   }
 
-
-
   // Trying to completely replace the readonly range
   if (selection.containsRange(readonlyRange)) {
 
     // Remove the first 4 lines
-    const tmp = pastedData.split('\n')
+    const tmp = replaceData.split('\n')
     tmp.splice(0, 4);
     replaceData = tmp.join('\n');
   }
