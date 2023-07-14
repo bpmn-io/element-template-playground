@@ -22,6 +22,8 @@ self.MonacoEnvironment = {
   }
 };
 
+const pasteContainer = document.getElementById('playground');
+
 const schemaUri = 'https://unpkg.com/browse/@camunda/zeebe-element-templates-json-schema/resources/schema.json';
 
 const jsonCode = `{
@@ -67,19 +69,22 @@ const jsonEditor = monaco.editor.create(document.querySelector('#code-container'
   formatOnPaste: true
 });
 
-jsonEditor.createDecorationsCollection(
-  readOnlyRanges.map((range) => ({
-    range: {
-      ...range
-    },
-    options: {
-      isWholeLine: true,
-      className: 'readOnlyLine',
-      marginClassName: 'readOnlyLine'
-    }
-  }))
-);
+function createDecorations() {
+  jsonEditor.createDecorationsCollection(
+    readOnlyRanges.map((range) => ({
+      range: {
+        ...range
+      },
+      options: {
+        isWholeLine: true,
+        className: 'readOnlyLine',
+        marginClassName: 'readOnlyLine'
+      }
+    }))
+  );
+}
 
+createDecorations();
 
 
 const bpmnModeler = new BpmnModeler({
@@ -129,42 +134,42 @@ function updatePreview() {
       'bpmnFactory',
       'modeling', 'canvas',
       'selection', (
-      elementTemplatesLoader,
-      elementTemplates,
-      elementFactory,
-      bpmnFactory,
-      modeling, canvas,
-      selection) => {
+        elementTemplatesLoader,
+        elementTemplates,
+        elementFactory,
+        bpmnFactory,
+        modeling, canvas,
+        selection) => {
 
-      elementTemplatesLoader.setTemplates([
-        templateDefinition
-      ]);
+        elementTemplatesLoader.setTemplates([
+          templateDefinition
+        ]);
 
-      const template = elementTemplates.get(templateDefinition.id);
+        const template = elementTemplates.get(templateDefinition.id);
 
-      if (!template) {
-        return handleError(new Error('failed to parse template'));
-      }
+        if (!template) {
+          return handleError(new Error('failed to parse template'));
+        }
 
-      const type = template.elementType && template.elementType.value || template.appliesTo[0];
+        const type = template.elementType && template.elementType.value || template.appliesTo[0];
 
-      bpmnModeler.importXML(BPMN_XML).then(() => {
+        bpmnModeler.importXML(BPMN_XML).then(() => {
 
-        const [ task ] = modeling.createElements([
-          elementFactory.create('shape', {
-            type: type,
-            businessObject: bpmnFactory.create(type, {
-              name: type.replace('bpmn:', '')
+          const [task] = modeling.createElements([
+            elementFactory.create('shape', {
+              type: type,
+              businessObject: bpmnFactory.create(type, {
+                name: type.replace('bpmn:', '')
+              })
             })
-          })
-        ], { x: 200, y: 200 }, canvas.getRootElement());
+          ], { x: 200, y: 200 }, canvas.getRootElement());
 
-        elementTemplates.applyTemplate(task, template);
+          elementTemplates.applyTemplate(task, template);
 
-        selection.select(task);
-      });
+          selection.select(task);
+        });
 
-    }]);
+      }]);
 
   } catch (error) {
     return handleError(error);
@@ -172,20 +177,90 @@ function updatePreview() {
 
 }
 
-const readonlyRange = new monaco.Range(0, 0, 5, 0)
+const readonlyRange = new monaco.Range(1, 1, 5, 1);
+
+pasteContainer.addEventListener('paste', event => {
+
+  const selection = jsonEditor.getSelection();
+
+  const clipboardData = event.clipboardData || window.clipboardData;
+  let replaceData = clipboardData.getData('text');
+
+  var items = clipboardData.items;
+
+  for (let index in items) {
+    var item = items[index];
+
+    if (item.kind !== 'file') {
+      continue;
+    }
+    let blob = item.getAsFile();
+    let reader = new FileReader();
+    reader.onload = function (event) {
+      const jsonValue = JSON.parse(jsonEditor.getValue());
+      jsonValue.icon = { contents: event.target.result };
+      jsonEditor.executeEdits(
+        'addIcon',
+        [
+          {
+            range: jsonEditor.getModel().getFullModelRange(),
+            text: JSON.stringify(jsonValue, null, 2)
+          }
+        ]
+      );
+      jsonEditor.getAction('editor.action.formatDocument').run()
+    };
+    reader.readAsDataURL(blob);
+
+    event.stopPropagation();
+    event.preventDefault();
+    return;
+  }
+
+
+
+  // Trying to completely replace the readonly range
+  if (selection.containsRange(readonlyRange)) {
+
+    // Remove the first 4 lines
+    const tmp = pastedData.split('\n')
+    tmp.splice(0, 4);
+    replaceData = tmp.join('\n');
+  }
+
+  if (readonlyRange.intersectRanges(selection)) {
+    // paste at the end of the readonly range
+    const replaceRange = moveAfterRange(selection, readonlyRange);
+
+    jsonEditor.executeEdits('paste', [
+      {
+        range: replaceRange,
+        text: replaceData
+      }
+    ]);
+
+    jsonEditor.getAction('editor.action.formatDocument').run()
+
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+}, true);
+
+
 jsonEditor.onKeyDown(e => {
-  console.log(e);
+  // console.log(e);
 
   // allow cursor movement
-  if (e.keyCode >= 13 && e.keyCode <= 18) { 
+  if (e.ctrlKey || isMoveEvent(e.browserEvent) || isPasteEvent(e.browserEvent)) {
     return;
   }
 
   const contains = jsonEditor.getSelections().findIndex(range => readonlyRange.intersectRanges(range))
-  
+
   if (contains !== -1) {
-      e.stopPropagation()
-      e.preventDefault() // for Ctrl+C, Ctrl+V
+    e.stopPropagation()
+    e.preventDefault() // for Ctrl+C, Ctrl+V
   }
 });
 
@@ -194,3 +269,37 @@ jsonEditor.onDidChangeModelContent(event => {
 });
 
 updatePreview();
+
+
+function isPasteEvent(keyboardEvent) {
+  return keyboardEvent.ctrlKey && keyboardEvent.keyCode === 86;
+}
+
+function isMoveEvent(keyboardEvent) {
+  return keyboardEvent.keyCode >= 35 && keyboardEvent.keyCode <= 40;
+}
+
+
+function moveAfterRange(selection, readOnly) {
+  const range = [
+    readOnly.endLineNumber,
+    readOnly.endColumn,
+    selection.endLineNumber,
+    selection.endColumn
+  ];
+
+  if (selection.endLineNumber < readOnly.endLineNumber) {
+    range[2] = readOnly.endLineNumber;
+  }
+
+  if (selection.endLineNumber < readOnly.endLineNumber ||
+    (selection.endLineNumber === readOnly.endLineNumber
+      && selection.endColumn < readOnly.endColumn)
+  ) {
+    range[3] = readOnly.endColumn;
+  }
+
+  return new monaco.Range(
+    ...range
+  )
+}
