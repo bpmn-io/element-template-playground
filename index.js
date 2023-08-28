@@ -179,14 +179,11 @@ function updatePreview() {
 
 }
 
-const readonlyRange = new monaco.Range(1, 1, 5, 1);
 
+// Handle paste of icon
 pasteContainer.addEventListener('paste', event => {
 
-  const selection = jsonEditor.getSelection();
-
   const clipboardData = event.clipboardData || window.clipboardData;
-  let replaceData = clipboardData.getData('text');
 
   var items = clipboardData.items;
 
@@ -201,6 +198,7 @@ pasteContainer.addEventListener('paste', event => {
     reader.onload = function (event) {
       const jsonValue = JSON.parse(jsonEditor.getValue());
       jsonValue.icon = { contents: event.target.result };
+      ignoreModelChange = true;
       jsonEditor.executeEdits(
         'addIcon',
         [
@@ -211,6 +209,7 @@ pasteContainer.addEventListener('paste', event => {
         ]
       );
       jsonEditor.getAction('editor.action.formatDocument').run()
+      ignoreModelChange = false;
     };
     reader.readAsDataURL(blob);
 
@@ -219,87 +218,42 @@ pasteContainer.addEventListener('paste', event => {
     return;
   }
 
-  // Trying to completely replace the readonly range
-  if (selection.containsRange(readonlyRange)) {
-
-    // Remove the first 4 lines
-    const tmp = replaceData.split('\n')
-    tmp.splice(0, 4);
-    replaceData = tmp.join('\n');
-  }
-
-  if (readonlyRange.intersectRanges(selection)) {
-    // paste at the end of the readonly range
-    const replaceRange = moveAfterRange(selection, readonlyRange);
-
-    jsonEditor.executeEdits('paste', [
-      {
-        range: replaceRange,
-        text: replaceData
-      }
-    ]);
-
-    jsonEditor.getAction('editor.action.formatDocument').run()
-
-    event.stopPropagation();
-    event.preventDefault();
-  }
-
 }, true);
 
 
-jsonEditor.onKeyDown(e => {
-  // console.log(e);
 
-  // allow cursor movement
-  if (e.ctrlKey || isMoveEvent(e.browserEvent) || isPasteEvent(e.browserEvent)) {
+// Handle read-only ranges
+let ignoreModelChange = false;
+jsonEditor.onDidChangeModelContent(async evt => {
+  if(ignoreModelChange) {
     return;
   }
 
-  const contains = jsonEditor.getSelections().findIndex(range => readonlyRange.intersectRanges(range))
+  if (evt.changes.some((change) => readOnlyRanges.some((range) => change.range.intersectRanges(range)))) {
+    // roll back the change
+    ignoreModelChange = true;
+    await undoCurrentOperation();
+    ignoreModelChange = false;
 
-  if (contains !== -1) {
-    e.stopPropagation()
-    e.preventDefault() // for Ctrl+C, Ctrl+V
+    return;
   }
+
+  updatePreview();
 });
 
-jsonEditor.onDidChangeModelContent(event => {
+
+jsonEditor.onDidChangeModelContent(() => {
   updatePreview();
 });
 
 updatePreview();
 
+// helpers /////////////////////////////
 
-function isPasteEvent(keyboardEvent) {
-  return keyboardEvent.ctrlKey && keyboardEvent.keyCode === 86;
-}
-
-function isMoveEvent(keyboardEvent) {
-  return keyboardEvent.keyCode >= 35 && keyboardEvent.keyCode <= 40;
-}
-
-
-function moveAfterRange(selection, readOnly) {
-  const range = [
-    readOnly.endLineNumber,
-    readOnly.endColumn,
-    selection.endLineNumber,
-    selection.endColumn
-  ];
-
-  if (selection.endLineNumber < readOnly.endLineNumber) {
-    range[2] = readOnly.endLineNumber;
-  }
-
-  if (selection.endLineNumber < readOnly.endLineNumber ||
-    (selection.endLineNumber === readOnly.endLineNumber
-      && selection.endColumn < readOnly.endColumn)
-  ) {
-    range[3] = readOnly.endColumn;
-  }
-
-  return new monaco.Range(
-    ...range
-  )
+async function undoCurrentOperation() {
+  // We want the current operation to finish before we roll it back
+  // ==> immediately resolve a promise and schedule the undo operation after
+  return Promise.resolve().then(() => {
+    jsonEditor.trigger('readonly', 'undo');
+  });
 }
