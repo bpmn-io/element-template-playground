@@ -2,6 +2,8 @@ import * as monaco from 'monaco-editor';
 
 import './suggestions'
 
+import 'camunda-bpmn-js/dist/assets/camunda-cloud-modeler.css';
+
 import BpmnModeler from 'camunda-bpmn-js/lib/camunda-cloud/Modeler';
 
 import jsonSchema from '@camunda/zeebe-element-templates-json-schema/resources/schema.json';
