@@ -225,7 +225,7 @@ pasteContainer.addEventListener('paste', event => {
 // Handle read-only ranges
 let ignoreModelChange = false;
 jsonEditor.onDidChangeModelContent(async evt => {
-  if(ignoreModelChange) {
+  if (ignoreModelChange) {
     return;
   }
 
