@@ -2,7 +2,8 @@
 	"name": "browser-esm-webpack",
 	"scripts": {
 		"start": "webpack serve",
-		"build": "webpack --progress --mode production"
+		"build": "webpack --progress --mode production",
+		"all": "npm run build"
 	},
 	"dependencies": {
 		"@camunda/zeebe-element-templates-json-schema": "^0.6.0",
