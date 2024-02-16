@@ -6,8 +6,8 @@
 		"all": "npm run build"
 	},
 	"dependencies": {
-		"@camunda/zeebe-element-templates-json-schema": "^0.17.0",
-		"camunda-bpmn-js": "^3.10.2",
+		"@camunda/zeebe-element-templates-json-schema": "^0.19.1",
+		"camunda-bpmn-js": "^3.13.0",
 		"monaco-editor": "^0.40.0"
 	},
 	"devDependencies": {
