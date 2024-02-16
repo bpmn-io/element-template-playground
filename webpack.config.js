@@ -26,5 +26,6 @@ module.exports = {
 				type: 'asset/resource'
 			}
 		]
-	}
+	},
+	devtool: 'cheap-module-source-map'
 };
