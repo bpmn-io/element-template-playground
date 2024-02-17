@@ -7,7 +7,7 @@
 	},
 	"dependencies": {
 		"@camunda/zeebe-element-templates-json-schema": "^0.19.1",
-		"camunda-bpmn-js": "^3.13.0",
+		"camunda-bpmn-js": "^4.0.0",
 		"monaco-editor": "^0.46.0"
 	},
 	"devDependencies": {
